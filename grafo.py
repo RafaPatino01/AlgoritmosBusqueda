@@ -66,7 +66,7 @@ class Grafo:
         yaExplorados = set([]) #lista de nodos con conexiones YA explorados
         
 
-        d = {} #d contiene la distancia, por ende inicializa en 0
+        d = {} #d es el nivel del arbol
         d[nodoInicio] = 0
         
         #es el diccionario que va a guardar el nodo con su padre
