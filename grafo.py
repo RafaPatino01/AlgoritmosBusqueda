@@ -71,11 +71,13 @@ class Grafo:
 
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = None
-            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                #directamente vemos todos los nodos, vamos recorriendo 
-                n = v; 
-                print('nodo que voy llegando: ',n)
-                    
+            for v in porExplorar:
+                if n == None or d[v] < d[n]: #reviso siempre que el nodo sea NONe
+                    #o que el nodo tenga un nivel de arbol menor al nodo que explorare
+                    #esto porque sigo explorando el mismo nivel, no avanzo
+                    n = v;
+
+            print('nodo que voy llegando ',n)        
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -134,20 +136,18 @@ class Grafo:
         padreDic = {}
         padreDic[nodoInicio] = nodoInicio
         
-        ultimoNvl =0;
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = None
 
-            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n==None:  #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
-                    #en la ruta hasat el final sin revisar hermanos
-                    antesultimo = ultimoNvl
-                    ultimoNvl = d[v] +1
-                    if antesultimo < ultimoNvl:
-                        print('nodo que voy llegando: ',v)
-                        n = v; 
+
+            for v in porExplorar:
+                if n == None or d[v] > d[n]:
+                    #exploro siempre y cuando el nodo actual sea menor que el por explorar
+                    #esto para que el nivel enn el arbol siga avanzando
+                    n = v;
                     
+                         
+            print('nodo que voy llegando',n)                
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -163,7 +163,7 @@ class Grafo:
                 ruta.reverse()
                 print('Ruta final: ',ruta)
                 return ruta
-
+            
             for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
                 #dist es la arbolNivel entre estos 2 nodos
@@ -178,6 +178,10 @@ class Grafo:
                     if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
+                        if nodoConexion in yaExplorados:
+                            yaExplorados.remove(nodoConexion)
+                            porExplorar.add(nodoConexion)
+
                         
             if n == None:
                 return None
@@ -206,24 +210,18 @@ class Grafo:
         padreDic[nodoInicio] = nodoInicio
 
         limite = 2
-        ultimoNvl=0
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = None
-            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n==None:  #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
-                    #en la ruta hasat el final sin revisar hermanos
-                    antesultimo = ultimoNvl
-                    ultimoNvl = d[v] +1
-                    if antesultimo < ultimoNvl:
-                        print('nodo que voy llegando: ',v)
-                        n = v; 
-                        if(d[v]==limite): #si llego al limite, entonces es el destino
-                        #ya llegue porque llegue a mi limite
-                            nodoDestino = n
-
-
             
+            for v in porExplorar:
+                if n == None or d[v] > d[n] and d[v] < limite:
+                    #mismas reglas de DFS
+                    #Pero solo entra si el nivel de arbol actual es menor que el limite
+                      n = v
+                      if(d[v]==limite): #si llego al limite, entonces es el destino
+                        #ya llegue porque llegue a mi limite
+                        nodoDestino = n
+
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -255,6 +253,10 @@ class Grafo:
                     if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
+                        if nodoConexion in yaExplorados:
+                            yaExplorados.remove(nodoConexion)
+                            porExplorar.add(nodoConexion)
+
                         
             if n == None:
                 return None
@@ -284,25 +286,20 @@ class Grafo:
 
 
 
-        ultimoNvl =0
+
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = None
-            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == None: #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
-                    #en la ruta hasat el final sin revisar hermanos
-                    antesultimo = ultimoNvl
-                    ultimoNvl = d[v] +1
-                    if antesultimo < ultimoNvl:
-                        print('nodo que voy llegando: ',v)
-                        n = v; 
 
-            
+            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
+                if n == None or d[v] > d[n] and d[v] <= limite:
+                    #Siempre y cuando el limite sea igual o menor, si llega
+                    n = v;
+
             if n == None: # aqui hacemos recursividad para aumentar por 1 el limte
                 #en caso que el nodo sea None saliendo de los explorados, le agregamos un nivel a 
                 #recorrer en el arbol para buscar 
                 limite += 1
-                self.first_in_depth(nodoInicio, nodoDestino,limite)
+                self.IDFS(nodoInicio, nodoDestino,limite)
                 return None
                         
              #comprobar si llegamos al final
