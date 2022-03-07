@@ -55,10 +55,6 @@ class Grafo:
 
     # ----- Algoritmo primero a lo ancho -----
     def BFS(self, nodoInicio, nodoDestino):
-        print("hola mundo")   
-
-    # ----- Algoritmo Primero Profundidad -----
-    def DFS(self, nodoInicio, nodoDestino):
 
         self.nodoDestino = nodoDestino
         
@@ -66,20 +62,19 @@ class Grafo:
         yaExplorados = set([]) #lista de nodos con conexiones YA explorados
         
 
-        d = {} #d es el nivel del arbol
+        d = {} #es el nivel del arbol
         d[nodoInicio] = 0
         
         #es el diccionario que va a guardar el nodo con su padre
         padreDic = {}
         padreDic[nodoInicio] = nodoInicio
 
-
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = False
-
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if not n:
-                    n = v; #agarra de donde vamos a explorar proximamente
+                if n == False or d[v] <= d[n]: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    n = v; 
+                    print('nodo que voy llegando: ',n)
                     
              #comprobar si llegamos al final
             if n == nodoDestino:
@@ -98,23 +93,21 @@ class Grafo:
                 print('Ruta final: ',ruta)
                 return ruta
 
-            for nodoConexion, distancia in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
-                #dist es la distancia entre estos 2 nodos
+                #dist es la arbolNivel entre estos 2 nodos
                 #si el nodo no esta en explorados ni por explorar lo agrego
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
                     porExplorar.add(nodoConexion) #se actualiza para explorar
                     padreDic[nodoConexion] = n   #{'S': 'S', 'A': 'S', 'D': 'S'} obtengo padre e hijo
                     d[nodoConexion] = d[n] + 1 # d = {'S': 0, 'A': 1, 'D': 1} asigno el nivel del "arbol", 1
-                    #d[nodoConexion] es el puro nivel
-                    
+                    #d[nodoConexion] es el puro nivel                
                 else:
 
                     if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-
             if n == False:
                 return False
             
@@ -124,9 +117,10 @@ class Grafo:
             
         print('La ruta no existe pai ')
         return False
-   
-    # ----- Algoritmo profundidad Limitada -----
-    def profundidadLim(self, nodoInicio, nodoDestino):
+
+
+    # ----- Algoritmo Primero Profundidad -----
+    def DFS(self,nodoInicio, nodoDestino):
 
         self.nodoDestino = nodoDestino
         
@@ -134,25 +128,90 @@ class Grafo:
         yaExplorados = set([]) #lista de nodos con conexiones YA explorados
         
 
-        d = {} #d es el nivel del arbol
+        d = {} #es el nivel del arbol
         d[nodoInicio] = 0
         
         #es el diccionario que va a guardar el nodo con su padre
         padreDic = {}
         padreDic[nodoInicio] = nodoInicio
 
-        limite = 5
-
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = False
-
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == False or d[v] > d[n] and d[n] < limite:
-                    n = v 
+                if n == False: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    n = v; 
+                    print('nodo que voy llegando: ',n)
+                    
+             #comprobar si llegamos al final
+            if n == nodoDestino:
+                ruta = []
+                while padreDic[n] != n: #buscamos la llave que contenga el valor de N 
+                    #o bien el padre encuentra a su hijo,
+                    #tipo n vale B, entonces encuentra a su hijo C y asi iterativamente
+                    #iteramos siempre que no se haya llegado al nodo inicial - 1
+                    ruta.append(n) #pusheamos el nodo a la ruta
+                    n = padreDic[n]  # n ahora toma el valor de su padre
+                    
+
+                ruta.append(nodoInicio) # el iinicio lo insertamos porque no estaba 
+                #y revertimos el arreglo de la nueva ruta
+                ruta.reverse()
+                print('Ruta final: ',ruta)
+                return ruta
+
+            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+                #nodoConexion es la conexion del nodo n
+                #dist es la arbolNivel entre estos 2 nodos
+                #si el nodo no esta en explorados ni por explorar lo agrego
+                if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
+                    porExplorar.add(nodoConexion) #se actualiza para explorar
+                    padreDic[nodoConexion] = n   #{'S': 'S', 'A': 'S', 'D': 'S'} obtengo padre e hijo
+                    d[nodoConexion] = d[n] + 1 # d = {'S': 0, 'A': 1, 'D': 1} asigno el nivel del "arbol", 1
+                    #d[nodoConexion] es el puro nivel                
+                else:
+
+                    if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
+                        d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
+                        padreDic[nodoConexion] = n #n ahora es parte de los padres
+                        
+            if n == False:
+                return False
+            
+            #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
+            porExplorar.remove(n)
+            yaExplorados.add(n)
+            
+        print('La ruta no existe pai ')
+        return False
+    
+    # ----- Algoritmo profundidad Limitada -----
+    def DFSLim(self,nodoInicio, nodoDestino):
+
+        self.nodoDestino = nodoDestino
+        
+        porExplorar = set([nodoInicio]) #lista de nodos con conexiones SIN explorar
+        yaExplorados = set([]) #lista de nodos con conexiones YA explorados
+        
+
+        d = {} #es el nivel del arbol
+        d[nodoInicio] = 0
+        
+        #es el diccionario que va a guardar el nodo con su padre
+        padreDic = {}
+        padreDic[nodoInicio] = nodoInicio
+
+        limite = 2
+        
+        while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
+            n = False
+            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
+                if n == False: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    n = v; 
+                    print('nodo que voy llegando: ',n)
                     if(d[v]==limite): #si llego al limite, entonces es el destino
                         #ya llegue porque llegue a mi limite
                         nodoDestino = n
-                
+                        
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -170,23 +229,21 @@ class Grafo:
                 print('Ruta final: ',ruta)
                 return ruta
 
-            for nodoConexion, distancia in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
-                #dist es la distancia entre estos 2 nodos
+                #dist es la arbolNivel entre estos 2 nodos
                 #si el nodo no esta en explorados ni por explorar lo agrego
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
                     porExplorar.add(nodoConexion) #se actualiza para explorar
                     padreDic[nodoConexion] = n   #{'S': 'S', 'A': 'S', 'D': 'S'} obtengo padre e hijo
                     d[nodoConexion] = d[n] + 1 # d = {'S': 0, 'A': 1, 'D': 1} asigno el nivel del "arbol", 1
-                    #d[nodoConexion] es el puro nivel
-                    
+                    #d[nodoConexion] es el puro nivel                
                 else:
 
                     if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-
             if n == False:
                 return False
             
@@ -196,7 +253,84 @@ class Grafo:
             
         print('La ruta no existe pai ')
         return False
- 
+    
+    # ----- Algoritmo profundidad iterativa -----
+    def IDFS(self,nodoInicio, nodoDestino,limite):
+
+        self.nodoDestino = nodoDestino
+        
+        porExplorar = set([nodoInicio]) #lista de nodos con conexiones SIN explorar
+        yaExplorados = set([]) #lista de nodos con conexiones YA explorados
+        
+
+        d = {} #es el nivel del arbol
+        d[nodoInicio] = 0
+        
+        #es el diccionario que va a guardar el nodo con su padre
+        padreDic = {}
+        padreDic[nodoInicio] = nodoInicio
+
+
+        nodos_recorridos=[]
+
+        while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
+            n = False
+            for v in porExplorar: #recorremos los que queremos explorar sus conexiones
+                if n == False or d[v] > d[n] and d[v] <= limite: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    n = v; 
+                    nodos_recorridos.append(n)
+                    print('nodo que voy llegando: ',n)
+            
+            if n == False: # aqui hacemos recursividad para aumentar por 1 el limte
+                #en caso que el nodo sea none saliendo de los explorados, le agregamos un nivel a 
+                #recorrer en el arbol para buscar 
+                limite += 1
+                self.first_in_depth(nodoInicio, nodoDestino,limite)
+                return False
+                        
+             #comprobar si llegamos al final
+            if n == nodoDestino:
+                ruta = []
+                while padreDic[n] != n: #buscamos la llave que contenga el valor de N 
+                    #o bien el padre encuentra a su hijo,
+                    #tipo n vale B, entonces encuentra a su hijo C y asi iterativamente
+                    #iteramos siempre que no se haya llegado al nodo inicial - 1
+                    ruta.append(n) #pusheamos el nodo a la ruta
+                    n = padreDic[n]  # n ahora toma el valor de su padre
+                    
+
+                ruta.append(nodoInicio) # el iinicio lo insertamos porque no estaba 
+                #y revertimos el arreglo de la nueva ruta
+                ruta.reverse()
+                print('Ruta final: ',ruta)
+                return ruta
+
+            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+                #nodoConexion es la conexion del nodo n
+                #dist es la arbolNivel entre estos 2 nodos
+                #si el nodo no esta en explorados ni por explorar lo agrego
+                if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
+                    porExplorar.add(nodoConexion) #se actualiza para explorar
+                    padreDic[nodoConexion] = n   #{'S': 'S', 'A': 'S', 'D': 'S'} obtengo padre e hijo
+                    d[nodoConexion] = d[n] + 1 # d = {'S': 0, 'A': 1, 'D': 1} asigno el nivel del "arbol", 1
+                    #d[nodoConexion] es el puro nivel                
+                else:
+
+                    if d[nodoConexion] > d[n] + 1: #si el nivel de mi conexion es mayor que mi nivel actual + 1
+                        d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
+                        padreDic[nodoConexion] = n #n ahora es parte de los padres
+                        
+            if n == False:
+                return False
+            
+            #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
+            porExplorar.remove(n)
+            yaExplorados.add(n)
+            
+        print('La ruta no existe pai ')
+        return False
+            
+    
     # ----- Algoritmo hill climbing -----
     def hillClimbing(self, nodoInicio, nodoDestino):
 
