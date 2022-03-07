@@ -70,9 +70,9 @@ class Grafo:
         padreDic[nodoInicio] = nodoInicio
 
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
-            n = False
+            n = None
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == False or d[v] <= d[n]: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                if n == None: #exploramos siempre que sea un nodo nuevo o de nivel menor
                     n = v; 
                     print('nodo que voy llegando: ',n)
                     
@@ -108,15 +108,15 @@ class Grafo:
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-            if n == False:
-                return False
+            if n == None:
+                return None
             
             #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
             porExplorar.remove(n)
             yaExplorados.add(n)
             
         print('La ruta no existe pai ')
-        return False
+        return None
 
 
     # ----- Algoritmo Primero Profundidad -----
@@ -134,13 +134,20 @@ class Grafo:
         #es el diccionario que va a guardar el nodo con su padre
         padreDic = {}
         padreDic[nodoInicio] = nodoInicio
-
+        
+        ultimoNvl =0;
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
-            n = False
+            n = None
+
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == False: #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    n = v; 
-                    print('nodo que voy llegando: ',n)
+                if n==None:  #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
+                    #en la ruta hasat el final sin revisar hermanos
+                    antesultimo = ultimoNvl
+                    ultimoNvl = d[v] +1
+                    if antesultimo < ultimoNvl:
+                        print('nodo que voy llegando: ',v)
+                        n = v; 
                     
              #comprobar si llegamos al final
             if n == nodoDestino:
@@ -151,7 +158,6 @@ class Grafo:
                     #iteramos siempre que no se haya llegado al nodo inicial - 1
                     ruta.append(n) #pusheamos el nodo a la ruta
                     n = padreDic[n]  # n ahora toma el valor de su padre
-                    
 
                 ruta.append(nodoInicio) # el iinicio lo insertamos porque no estaba 
                 #y revertimos el arreglo de la nueva ruta
@@ -174,15 +180,15 @@ class Grafo:
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-            if n == False:
-                return False
+            if n == None:
+                return None
             
             #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
             porExplorar.remove(n)
             yaExplorados.add(n)
             
         print('La ruta no existe pai ')
-        return False
+        return None
     
     # ----- Algoritmo profundidad Limitada -----
     def DFSLim(self,nodoInicio, nodoDestino):
@@ -201,17 +207,24 @@ class Grafo:
         padreDic[nodoInicio] = nodoInicio
 
         limite = 2
-        
+        ultimoNvl=0
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
-            n = False
+            n = None
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == False: #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    n = v; 
-                    print('nodo que voy llegando: ',n)
-                    if(d[v]==limite): #si llego al limite, entonces es el destino
+                if n==None:  #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
+                    #en la ruta hasat el final sin revisar hermanos
+                    antesultimo = ultimoNvl
+                    ultimoNvl = d[v] +1
+                    if antesultimo < ultimoNvl:
+                        print('nodo que voy llegando: ',v)
+                        n = v; 
+                        if(d[v]==limite): #si llego al limite, entonces es el destino
                         #ya llegue porque llegue a mi limite
-                        nodoDestino = n
-                        
+                            nodoDestino = n
+
+
+            
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -244,15 +257,15 @@ class Grafo:
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-            if n == False:
-                return False
+            if n == None:
+                return None
             
             #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
             porExplorar.remove(n)
             yaExplorados.add(n)
             
         print('La ruta no existe pai ')
-        return False
+        return None
     
     # ----- Algoritmo profundidad iterativa -----
     def IDFS(self,nodoInicio, nodoDestino,limite):
@@ -271,22 +284,27 @@ class Grafo:
         padreDic[nodoInicio] = nodoInicio
 
 
-        nodos_recorridos=[]
 
+        ultimoNvl =0
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
-            n = False
+            n = None
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == False or d[v] > d[n] and d[v] <= limite: #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    n = v; 
-                    nodos_recorridos.append(n)
-                    print('nodo que voy llegando: ',n)
+                if n == None: #exploramos siempre que sea un nodo nuevo o de nivel menor
+                    #Reviso que el nodo actual su nivel sea menor, asi ya puedo seguir 
+                    #en la ruta hasat el final sin revisar hermanos
+                    antesultimo = ultimoNvl
+                    ultimoNvl = d[v] +1
+                    if antesultimo < ultimoNvl:
+                        print('nodo que voy llegando: ',v)
+                        n = v; 
+
             
-            if n == False: # aqui hacemos recursividad para aumentar por 1 el limte
-                #en caso que el nodo sea none saliendo de los explorados, le agregamos un nivel a 
+            if n == None: # aqui hacemos recursividad para aumentar por 1 el limte
+                #en caso que el nodo sea None saliendo de los explorados, le agregamos un nivel a 
                 #recorrer en el arbol para buscar 
                 limite += 1
                 self.first_in_depth(nodoInicio, nodoDestino,limite)
-                return False
+                return None
                         
              #comprobar si llegamos al final
             if n == nodoDestino:
@@ -320,15 +338,15 @@ class Grafo:
                         d[nodoConexion] = d[n] + 1 #le asigno ese nuevo nivel  que lo hace bajar 1
                         padreDic[nodoConexion] = n #n ahora es parte de los padres
                         
-            if n == False:
-                return False
+            if n == None:
+                return None
             
             #n ya fue explorado, se pasa al siguiente nodo y ya no esta para explorarse
             porExplorar.remove(n)
             yaExplorados.add(n)
             
         print('La ruta no existe pai ')
-        return False
+        return None
             
     
     # ----- Algoritmo hill climbing -----
@@ -425,3 +443,4 @@ class Grafo:
     # ----- Algoritmo beam search -----
     def beam(self, nodoInicio, nodoDestino, w):
         print("hola mundo")   
+        
