@@ -77,7 +77,6 @@ class Grafo:
                 print('nodo que voy llegando: ',n)
                     
              #comprobar si llegamos al final
-            print('-------------------------')
             if n == nodoDestino:
                 ruta = []
                 while padreDic[n] != n: #buscamos la llave que contenga el valor de N 
