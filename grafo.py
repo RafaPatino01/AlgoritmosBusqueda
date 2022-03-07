@@ -72,11 +72,12 @@ class Grafo:
         while len(porExplorar) > 0: #recorremos la lista hasta que se vacie
             n = None
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
-                if n == None: #exploramos siempre que sea un nodo nuevo o de nivel menor
-                    n = v; 
-                    print('nodo que voy llegando: ',n)
+                #directamente vemos todos los nodos, vamos recorriendo 
+                n = v; 
+                print('nodo que voy llegando: ',n)
                     
              #comprobar si llegamos al final
+            print('-------------------------')
             if n == nodoDestino:
                 ruta = []
                 while padreDic[n] != n: #buscamos la llave que contenga el valor de N 
@@ -117,7 +118,6 @@ class Grafo:
             
         print('La ruta no existe pai ')
         return None
-
 
     # ----- Algoritmo Primero Profundidad -----
     def DFS(self,nodoInicio, nodoDestino):
