@@ -4,16 +4,26 @@ from grafo import *
 myCSV = "/Volumes/GoogleDrive/My Drive/Universidad/Semestre 6/IA/proyecto_busqueda/Grafoproyecto.csv"
 grafo = Grafo(myCSV)
 
+
 # Profundidad limitada
-grafo.BFS('A','G')
+print('BFS')
+#rutaBFS = grafo.BFS('M?xico','Monterrey')
+#print('Ruta: ',rutaBFS)
 print('-------------------------------')
-grafo.DFS('A','G')
+print('DFS')
+#rutaDFS = grafo.DFS('M?xico','Monterrey')
+#print('Ruta: ',rutaDFS)
 print('-------------------------------')
-grafo.DFSLim('A','I')
+print('DFS Limited')
+#rutaDFSLim = grafo.DFSLim('M?xico','Monterrey')
+#print('Ruta: ',rutaDFSLim)
+print('-------------------------------')#
+print('Iterative DFS')
+#rutaIDFS = grafo.IDFS("A", "I", 1)
+#print('Ruta: ',rutaIDFS)
 print('-------------------------------')
-grafo.IDFS("A", "G", 1)
-print('-------------------------------')
-
-
+print('A estrella')
+rutaEstrella = grafo.aEstrella('M?xico','Monterrey')
+print('ruta: ',rutaEstrella)
 # Best First
 #grafo.bestFirst("A", "G")
