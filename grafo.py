@@ -500,6 +500,10 @@ class Grafo:
         
         while len(porExplorar) > 0:
             n = None
+            #nuestra condicion para que n tome el valor de v
+            #es que sea nulo el nodo
+            #el nivel del nodo a explorar + su heuristica sea menor que 
+            #el nivel del nodo actual + su heuristica
             for v in porExplorar:
                 if n == None or d[v] + self.heuristica(v) < d[n] + self.heuristica(n):
                     n = v
@@ -521,26 +525,34 @@ class Grafo:
                 ruta.reverse()
                 return ruta
 
-            for (nodoConexion, w) in self.getConexiones(n):
+            for (nodoConexion, w) in self.getConexiones(n): #revisamos las conexiones de "n"
 
+                #revisamos si el nodo aun no se explora ni esta para explorarse
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
                     porExplorar.add(nodoConexion)
-                    padreDic[nodoConexion] = n
-                    d[nodoConexion] = d[n] + w
+                    padreDic[nodoConexion] = n #nodoConexion tiene a su padre o n en curso
+                    d[nodoConexion] = d[n] + w #se agrega el nuevo nodo a la lista de explorar con su respectivo nivel
+                    #(su nivel en el arbol ahora maneja el peso)
 
                 else:
+                    #sacar otra ruta, en caso que ya se revisaron x nodos
+                    #vemos si el nivel de mi nodoConexion tiene menos peso que mi nodo actual + su peso
+                    #si es el caso quiere decir que la ruta puede que sea menor
                     if d[nodoConexion] > d[n] + w:
                         d[nodoConexion] = d[n] + w
-                        padreDic[nodoConexion] = n
+                        padreDic[nodoConexion] = n #nodoConexion tomara el nuevo nivel + peso y su padre en curso
 
                         if nodoConexion in yaExplorados:
+                            #si mi nodo conexion ya fue explorado, entonces lo quito y lo pongo en explorar
+                            #para posiblemente encontrarlo con otra ruta
                             yaExplorados.remove(nodoConexion)
                             porExplorar.add(nodoConexion)
 
+            #el nodo en curso ya fue explorado entonces se agrega a "yaExplorados" y se quita de "porExplorar"                 
             porExplorar.remove(n)
             yaExplorados.add(n)
         
-        return ('No se encontro un camino')
+        return ('No se encontro un camino') #saliendo del while si no se llega al destino, no hay ruta entonces
     
     # ----- Algoritmo Branch and Bound -----
     def branch_and_bound(self, nodoInicio, nodoDestino):
@@ -561,27 +573,34 @@ class Grafo:
             n = None
 
             for v in porExplorar:
+                #revisamos que mi nodo sea nulo o que
+                #el nivel de mi nodo sea mayor que sus nodos a explorar para recorrer hacia los lados 
                 if n == None or d[v] < d[n]:
                     n = v
 
+             #En caso de que llegue al destino 
             if n == nodoDestino:
                 detener = True
                 lista_borrado = []
                 for v in porExplorar:
+                   #agrego los nodos que sean nulos o que en la lista de explorar mayores a mi nodo actual 
                     if n == None or d[v] > d[n]:
                         lista_borrado.append(v)
 
                     elif(v != n):
+                        #si mi v es diferente a mi nodo actual entonces es falso porque aun no llego al final
                         detener = False
                         v = n
                         break
                 for i in lista_borrado:
+                    #mis nodos de la lista de borrado ya fueron explorados entonces
                     porExplorar.remove(i)
                     yaExplorados.add(i)
 
 
 
-                if detener:
+                if detener:#En caso de que si se haya llegado al final 
+                    #Se imprime la ruta como en otros metodos
 
                     ruta = []
 
@@ -600,21 +619,27 @@ class Grafo:
 
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
                     porExplorar.add(nodoConexion)
-                    padreDic[nodoConexion] = n
-                    d[nodoConexion] = d[n] + w
+                    padreDic[nodoConexion] = n #nodoConexion tiene a su padre o n en curso  
+                    d[nodoConexion] = d[n] + w #se agrega el nuevo nodo a la lista de explorar con su respectivo nivel
+                    #(su nivel en el arbol ahora maneja el peso)
 
 
                 else:
+                    #sacar otra ruta, en caso que ya se revisaron x nodos
+                    #vemos si el nivel de mi nodoConexion tiene menos peso que mi nodo actual + su peso
+                    #si es el caso quiere decir que la ruta puede que sea menor
                     if d[nodoConexion] > d[n] + w:
                         d[nodoConexion] = d[n] + w
-                        padreDic[nodoConexion] = n
+                        padreDic[nodoConexion] = n #nodoConexion tomara el nuevo nivel + peso y su padre en curso
 
                         if nodoConexion in yaExplorados:
+                            #si mi nodo conexion ya fue explorado, entonces lo quito y lo pongo en explorar
+                            #para posiblemente encontrarlo con otra ruta
                             yaExplorados.remove(nodoConexion)
                             porExplorar.add(nodoConexion)
 
+             #el nodo en curso ya fue explorado entonces se agrega a "yaExplorados" y se quita de "porExplorar"                 
             porExplorar.remove(n)
             yaExplorados.add(n)
-
-        print('No se encontro un camino')
-        return None
+        
+        return ('No se encontro un camino') #saliendo del while si no se llega al destino, no hay ruta entonces
