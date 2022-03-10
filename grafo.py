@@ -50,7 +50,7 @@ class Grafo:
         self.listaConexiones = diccionarioConexiones
     
     # ----- Get Conexiones del vértice -----
-    def verticesConexion(self, v):
+    def getConexiones(self, v):
         return self.listaConexiones[v] #regresa la lista de conexioens de "v" nodo 
 
     #funcion que nos devuelve la heuristica
@@ -100,9 +100,9 @@ class Grafo:
                 if n == None or d[v] < d[n]: #reviso siempre que el nodo sea NONe
                     #o que el nodo tenga un nivel de arbol menor al nodo que explorare
                     #esto porque sigo explorando el mismo nivel, no avanzo
-                    n = v;
-       
-            print('nodo que voy llegando',n)
+                    n = v
+
+            print('nodo que voy llegando ',n)        
              #comprobar si llegamos al final
             if n == nodoDestino:
                 ruta = []
@@ -118,7 +118,7 @@ class Grafo:
                 ruta.reverse()
                 return ruta
 
-            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.getConexiones(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
                 #si el nodo no esta en explorados ni por explorar lo agrego
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
@@ -159,7 +159,7 @@ class Grafo:
                 if n == None or d[v] > d[n]:
                     #exploro siempre y cuando el nodo actual sea menor que el por explorar
                     #esto para que el nivel enn el arbol siga avanzando
-                    n = v;
+                    n = v
                     
                          
            # print('nodo que voy llegando',n)                
@@ -178,7 +178,7 @@ class Grafo:
                 ruta.reverse()
                 return ruta
             
-            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.getConexiones(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
                 #dist es la arbolNivel entre estos 2 nodos
                 #si el nodo no esta en explorados ni por explorar lo agrego
@@ -252,7 +252,7 @@ class Grafo:
                 ruta.reverse()
                 return ruta
 
-            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.getConexiones(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
                 #dist es la arbolNivel entre estos 2 nodos
                 #si el nodo no esta en explorados ni por explorar lo agrego
@@ -300,7 +300,7 @@ class Grafo:
             for v in porExplorar: #recorremos los que queremos explorar sus conexiones
                 if n == None or d[v] > d[n] and d[v] <= limite:
                     #Siempre y cuando el limite sea igual o menor, si llega
-                    n = v;
+                    n = v
 
             print('nodo al que llego',n)
             if n == None: # aqui hacemos recursividad para aumentar por 1 el limte
@@ -326,7 +326,7 @@ class Grafo:
                 ruta.reverse()
                 return ruta
 
-            for nodoConexion, arbolNivel in self.verticesConexion(n): #iteramos en las conexiones del nodo actual
+            for nodoConexion, arbolNivel in self.getConexiones(n): #iteramos en las conexiones del nodo actual
                 #nodoConexion es la conexion del nodo n
                 #dist es la arbolNivel entre estos 2 nodos
                 #si el nodo no esta en explorados ni por explorar lo agrego
@@ -350,7 +350,6 @@ class Grafo:
             
         return ('La ruta no existe pai ')
             
-    
     # ----- Algoritmo hill climbing -----
     def hillClimbing(self, nodoInicio, nodoDestino):
 
@@ -358,7 +357,7 @@ class Grafo:
         visitados = [nodoInicio] # Visitar el nodo inicial
 
         # añadir ordenadamente los nodos adyacentes a la agenda
-        agenda = sorted(self.verticesConexion(nodoInicio), key=lambda tup: tup[1]) 
+        agenda = sorted(self.getConexiones(nodoInicio), key=lambda tup: tup[1]) 
 
         # mientras haya elementos en la agenda
         while agenda:
@@ -369,7 +368,7 @@ class Grafo:
                 break
 
             temp_agenda = []
-            for nodo in self.verticesConexion(actual):
+            for nodo in self.getConexiones(actual):
                 if nodo[0] not in visitados:
                     temp_agenda.append(nodo)
 
@@ -391,7 +390,7 @@ class Grafo:
         # Si el último elemento no tiene conexión con el penúltimo entonces lo borra
         for i in range(len(ruta)-1,-1,-1):
             aux = []
-            for element in self.verticesConexion(ruta[i-1]):
+            for element in self.getConexiones(ruta[i-1]):
                 aux.append(element[0])
 
             if (not ruta[i] in aux) and (i != 0):
@@ -406,7 +405,7 @@ class Grafo:
         visitados = [nodoInicio] # Visitar el nodo inicial
 
         # añadir ordenadamente los nodos adyacentes a la agenda
-        agenda = sorted(self.verticesConexion(nodoInicio), key=lambda tup: tup[1]) 
+        agenda = sorted(self.getConexiones(nodoInicio), key=lambda tup: tup[1]) 
 
         # mientras haya elementos en la agenda
         while agenda:
@@ -417,7 +416,7 @@ class Grafo:
                 break
 
             temp_agenda = []
-            for nodo in self.verticesConexion(actual):
+            for nodo in self.getConexiones(actual):
                 if nodo[0] not in visitados:
                     temp_agenda.append(nodo)
 
@@ -434,7 +433,7 @@ class Grafo:
         # Si el último elemento no tiene conexión con el penúltimo entonces lo borra
         for i in range(len(ruta)-1,-1,-1):
             aux = []
-            for element in self.verticesConexion(ruta[i-1]):
+            for element in self.getConexiones(ruta[i-1]):
                 aux.append(element[0])
 
             if (not ruta[i] in aux) and (i != 0):
@@ -444,8 +443,48 @@ class Grafo:
 
     # ----- Algoritmo beam search -----
     def beam(self, nodoInicio, nodoDestino, w):
-        print("hola mundo")
-        
+        ruta = [nodoInicio]
+        visitados = [nodoInicio] # Visitar el nodo inicial
+
+        # añadir ordenadamente los nodos adyacentes a la agenda
+        agenda = sorted(self.getConexiones(nodoInicio), key=lambda tup: tup[1]) 
+
+        # mientras haya elementos en la agenda
+        while agenda:
+            actual = agenda[0][0] # Moverse al mejor nodo
+
+            if actual == nodoDestino: # Si es el nodo destino, terminar el while
+                ruta.append(actual)
+                break
+
+            temp_agenda = []
+            for nodo in self.getConexiones(actual):
+                if nodo[0] not in visitados:
+                    temp_agenda.append(nodo)
+
+            temp_agenda = sorted(temp_agenda, key=lambda tup: tup[1]) # nodos adyacentes del nodo actual 
+
+            del agenda[0] # eliminar el nodo actual de la agenda
+
+            temp_agenda.extend(agenda) # extender la agenda con todos los nodos que siguen
+            agenda = temp_agenda[:w+1] # solo conservar los mejores "w"
+
+            visitados.append(actual) # marcar visitado el nodo actual
+            ruta.append(actual) # añadirlo a la ruta
+
+        # Limpiar ruta 
+        # Si el último elemento no tiene conexión con el penúltimo entonces lo borra
+        for i in range(len(ruta)-1,-1,-1):
+            aux = []
+            for element in self.getConexiones(ruta[i-1]):
+                aux.append(element[0])
+
+            if (not ruta[i] in aux) and (i != 0):
+                del ruta[i-1]
+                    
+        print("ruta: " + str(ruta))
+
+    # ----- Algoritmo A* -----  
     def aEstrella(self, nodoInicio, nodoDestino):
 
         self.nodoDestino = nodoDestino
@@ -463,7 +502,7 @@ class Grafo:
             n = None
             for v in porExplorar:
                 if n == None or d[v] + self.heuristica(v) < d[n] + self.heuristica(n):
-                    n = v;
+                    n = v
 
 
              #comprobar si llegamos al final
@@ -482,16 +521,16 @@ class Grafo:
                 ruta.reverse()
                 return ruta
 
-            for (nodoConexion, peso) in self.verticesConexion(n):
+            for (nodoConexion, w) in self.getConexiones(n):
 
                 if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
                     porExplorar.add(nodoConexion)
                     padreDic[nodoConexion] = n
-                    d[nodoConexion] = d[n] + peso
+                    d[nodoConexion] = d[n] + w
 
                 else:
-                    if d[nodoConexion] > d[n] + peso:
-                        d[nodoConexion] = d[n] + peso
+                    if d[nodoConexion] > d[n] + w:
+                        d[nodoConexion] = d[n] + w
                         padreDic[nodoConexion] = n
 
                         if nodoConexion in yaExplorados:
@@ -503,4 +542,79 @@ class Grafo:
         
         return ('No se encontro un camino')
     
-        
+    # ----- Algoritmo Branch and Bound -----
+    def branch_and_bound(self, nodoInicio, nodoDestino):
+
+        self.nodoDestino = nodoDestino
+
+        porExplorar = set([nodoInicio])
+        yaExplorados = set([])
+
+        d = {}
+
+        d[nodoInicio] = 0
+
+        padreDic = {}
+        padreDic[nodoInicio] = nodoInicio
+
+        while len(porExplorar) > 0:
+            n = None
+
+            for v in porExplorar:
+                if n == None or d[v] < d[n]:
+                    n = v
+
+            if n == nodoDestino:
+                detener = True
+                lista_borrado = []
+                for v in porExplorar:
+                    if n == None or d[v] > d[n]:
+                        lista_borrado.append(v)
+
+                    elif(v != n):
+                        detener = False
+                        v = n
+                        break
+                for i in lista_borrado:
+                    porExplorar.remove(i)
+                    yaExplorados.add(i)
+
+
+
+                if detener:
+
+                    ruta = []
+
+                    while padreDic[n] != n:
+                        ruta.append(n)
+                        n = padreDic[n]
+
+                    ruta.append(nodoInicio)
+
+                    ruta.reverse()
+
+
+                    return ruta
+
+            for (nodoConexion, w) in self.getConexiones(n):
+
+                if nodoConexion not in porExplorar and nodoConexion not in yaExplorados:
+                    porExplorar.add(nodoConexion)
+                    padreDic[nodoConexion] = n
+                    d[nodoConexion] = d[n] + w
+
+
+                else:
+                    if d[nodoConexion] > d[n] + w:
+                        d[nodoConexion] = d[n] + w
+                        padreDic[nodoConexion] = n
+
+                        if nodoConexion in yaExplorados:
+                            yaExplorados.remove(nodoConexion)
+                            porExplorar.add(nodoConexion)
+
+            porExplorar.remove(n)
+            yaExplorados.add(n)
+
+        print('No se encontro un camino')
+        return None
